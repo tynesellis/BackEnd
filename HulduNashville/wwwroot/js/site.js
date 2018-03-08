@@ -1,6 +1,14 @@
 ﻿//function to geocode the address entered by the user and set it at the center of the map
 const setCenterMarker = function () {
-   
+    debugger
+    //set the options of the map
+    const mapOptions = {
+        zoom: 12
+    };
+
+    //make a new google map that targets the div with id "map" and pass in the map options
+    let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
     //get an instance of the geocoder
     let geocoder = new google.maps.Geocoder();
 
@@ -9,15 +17,8 @@ const setCenterMarker = function () {
 
     //make the call to google maps api to get geocoding of the address
     geocoder.geocode({ 'address': address }, function (results, status) {
-
-        //set the options of the map
-        const mapOptions = {
-            zoom: 12
-        };
-
-        //make a new google map that targets the div with id "map" and pass in the map options
-        let map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
+        debugger
+ 
         if (status == 'OK') {
             if (results[0].address_components[4].long_name !== "Davidson County") {
                 var map = new google.maps.Map(document.getElementById('map'), {

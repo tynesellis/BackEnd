@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="map"></div>
+<script>
+    function initMap() {
+        const Nashville = { lat: 36.1089409, lng: -86.8468632 };
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: Nashville
+        });
+
+    }
+</script>
+

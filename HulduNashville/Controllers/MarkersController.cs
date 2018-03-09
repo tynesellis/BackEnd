@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HulduNashville.Data;
 using HulduNashville.Models;
+using System.Net;
+using System.Xml.Linq;
+using System.IO;
+using Newtonsoft.Json;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace HulduNashville.Controllers
 {
@@ -63,6 +69,23 @@ namespace HulduNashville.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,LatLong,CategoryId,CitationId,ImageId")] Marker marker)
         {
+            var client = new HttpClient();
+            string address = marker.LatLong;
+            string requestUri = string.Format("http://maps.googleapis.com/maps/api/geocode/json?address={0}&sensor=false$key=AIzaSyCjC9iCmI7i2do5GFSUYDnmiyqAShhyj4Y", Uri.EscapeDataString(address));
+
+
+            var response = await client.GetAsync(requestUri);
+
+            string textResult = await response.Content.ReadAsStringAsync();
+            client.Dispose();
+            var json = JObject.Parse(textResult);
+            string lat = (string)json["results"][0]["geometry"]["location"]["lat"];
+            string lng = (string)json["results"][0]["geometry"]["location"]["lng"];
+            marker.LatLong = $"{{ {lat}, {lng} }}";
+
+
+
+
             if (ModelState.IsValid)
             {
                 _context.Add(marker);

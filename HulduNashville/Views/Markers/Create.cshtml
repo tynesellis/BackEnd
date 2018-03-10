@@ -19,13 +19,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control" ></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Lat" class="control-label"></label>
-                <input asp-for="Lat" class="form-control" />
-                <span asp-validation-for="Lat" class="text-danger"></span>
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
@@ -82,6 +82,11 @@
     <div class="col-md-4">
         <form asp-action="HiddenCreate" asp-controller="Images">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Image.ImageName" class="control-label"></label>
+                <input asp-for="Image.ImageName" class="form-control" />
+                <span asp-validation-for="Image.ImageName" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Image.ImageURL" class="control-label"></label>
                 <input asp-for="Image.ImageURL" class="form-control" />

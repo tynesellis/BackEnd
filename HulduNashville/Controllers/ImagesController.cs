@@ -54,7 +54,7 @@ namespace HulduNashville.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ImageURL")] Image image)
+        public async Task<IActionResult> Create([Bind("Id,ImageURL,ImageName")] Image image)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +67,7 @@ namespace HulduNashville.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> HiddenCreate([Bind("Id,ImageURL")] Image image)
+        public async Task<IActionResult> HiddenCreate([Bind("Id,ImageURL,ImageName")] Image image)
         {
             if (ModelState.IsValid)
             {
@@ -99,7 +99,7 @@ namespace HulduNashville.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ImageURL")] Image image)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ImageURL,ImageName")] Image image)
         {
             if (id != image.Id)
             {

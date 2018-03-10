@@ -4,7 +4,6 @@ const GetMarkerData = $.ajax({
     Method: "Get",
     url: "http://localhost:51208/Markers/GetMarkers"
 }).then(function (r) {
-    console.log(r);
     MarkerData = r;
 });
 
@@ -27,7 +26,7 @@ const setCenterMarker = function () {
     
     //make the call to google maps api to get geocoding of the address
     geocoder.geocode({ 'address': address }, function (results, status) {
-        
+        console.log(results);
         if (status == 'OK') {
 
             if (results[0].address_components[4].long_name !== "Davidson County") {
@@ -42,6 +41,8 @@ const setCenterMarker = function () {
                     zoom: 12,
                     center: results[0].geometry.location
                 });
+                let clat = parseFloat(map.center.lat());
+                let clng = parseFloat(map.center.lng());
 
                 //make a new marker with posistion of the coordinates returned
                 var marker = new google.maps.Marker({
@@ -49,15 +50,35 @@ const setCenterMarker = function () {
                     position: results[0].geometry.location,
                     label: "*"
                 });
-                
                 MarkerData.forEach(m => {
-                    const LatLong = { "lat": parseFloat(m.lat), "lng": parseFloat(m.lng) };
                     debugger
+                    const LatLong = { "lat": parseFloat(m.lat), "lng": parseFloat(m.lng) };
+                    let distance = google.maps.geometry.spherical.computeDistanceBetween
+                        (new google.maps.LatLng(clat, clng),
+                        new google.maps.LatLng(parseFloat(m.lat), parseFloat(m.lng)));
+                    console.log(distance);
                    const NewMarker = new google.maps.Marker({
                         map: map,
                         position: LatLong,
                         label: "TestMarker"
+                   });
+                   debugger
+                   let contentString = `
+                    <h1>${m.title}</h1>
+                    <h1>${m.address}</h1>
+                    <img src="${m.image.imageURL} alt="${m.image.imageName} height="100">
+                    <p>${m.description}</p>
+                    <p>Source: ${m.citation.source}</p>
+                    `;
+
+                    var infowindow = new google.maps.InfoWindow({
+                       content: contentString
                     });
+
+                    NewMarker.setMap(map);
+                    NewMarker.addListener('click', function () {
+                        infowindow.open(map, NewMarker);
+                   });
                    NewMarker.setMap(map);
                 });
 

@@ -24,14 +24,23 @@ namespace HulduNashville.Models
         public string Lng { get; set; }
 
         [Required]
+        public string Address { get; set; }
+
+        [Required]
+        [Display(Name = "Category")]
+
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
         [Required]
+        [Display(Name = "Source")]
+
         public int CitationId { get; set; }
         public Citation Citation { get; set; }
 
         [Required]
+        [Display(Name = "Image")]
+
         public int ImageId { get; set; }
         public Image Image { get; set; }
     }

@@ -11,8 +11,8 @@ using System;
 namespace HulduNashville.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180308003631_first")]
-    partial class first
+    [Migration("20180310020915_First")]
+    partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -123,7 +123,10 @@ namespace HulduNashville.Migrations
 
                     b.Property<int>("ImageId");
 
-                    b.Property<string>("LatLong")
+                    b.Property<string>("Lat")
+                        .IsRequired();
+
+                    b.Property<string>("Lng")
                         .IsRequired();
 
                     b.Property<string>("Title")

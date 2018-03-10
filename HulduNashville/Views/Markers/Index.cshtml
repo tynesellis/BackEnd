@@ -19,7 +19,10 @@
                     @Html.DisplayNameFor(model => model.Description)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.LatLong)
+                    @Html.DisplayNameFor(model => model.Lat)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Lng)
                 </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category)
@@ -43,7 +46,10 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LatLong)
+                @Html.DisplayFor(modelItem => item.Lat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lng)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Title)

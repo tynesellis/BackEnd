@@ -18,7 +18,10 @@ namespace HulduNashville.Models
         public string Description { get; set; }
 
         [Required]
-        public string LatLong { get; set; }
+        public string Lat { get; set; }
+
+        [Required]
+        public string Lng { get; set; }
 
         [Required]
         public int CategoryId { get; set; }

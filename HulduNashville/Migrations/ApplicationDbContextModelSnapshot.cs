@@ -122,7 +122,10 @@ namespace HulduNashville.Migrations
 
                     b.Property<int>("ImageId");
 
-                    b.Property<string>("LatLong")
+                    b.Property<string>("Lat")
+                        .IsRequired();
+
+                    b.Property<string>("Lng")
                         .IsRequired();
 
                     b.Property<string>("Title")

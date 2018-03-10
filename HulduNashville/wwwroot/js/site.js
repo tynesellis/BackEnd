@@ -1,4 +1,14 @@
-﻿//function to geocode the address entered by the user and set it at the center of the map
+﻿let MarkerData = [];
+
+const GetMarkerData = $.ajax({
+    Method: "Get",
+    url: "http://localhost:51208/Markers/GetMarkers"
+}).then(function (r) {
+    console.log(r);
+    MarkerData = r;
+});
+
+//function to geocode the address entered by the user and set it at the center of the map
 const setCenterMarker = function () {
 
     //set the options of the map
@@ -39,10 +49,18 @@ const setCenterMarker = function () {
                     position: results[0].geometry.location,
                     label: "*"
                 });
-                $.ajax({
-                    Method: "Get",
-                    url: "/Markers"
-                }).then();
+                
+                MarkerData.forEach(m => {
+                    const LatLong = { "lat": parseFloat(m.lat), "lng": parseFloat(m.lng) };
+                    debugger
+                   const NewMarker = new google.maps.Marker({
+                        map: map,
+                        position: LatLong,
+                        label: "TestMarker"
+                    });
+                   NewMarker.setMap(map);
+                });
+
             }
         } else {
             //if the address was bad, let the user know why

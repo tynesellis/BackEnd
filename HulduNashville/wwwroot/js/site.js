@@ -20,9 +20,12 @@ const makeMarker = function (LatLong, map, m) {
     let contentString = `
                     <h5>${m.title}</h5>
                     <h5>${m.address}</h5>
-                    <img src="${m.image.imageURL} alt="${m.image.imageName} height="100">
+                    <div>
+                    <img src="${m.image.imageURL}" alt="${m.image.imageName} height="25" width="auto">
+                    </div>
                     <p>${m.description}</p>
                     <p>Source: ${m.citation.source}</p>
+                    <button class="addFav" id="${m.id}">Add To My Favorites</button>
                     `;
     //create info window
     var infowindow = new google.maps.InfoWindow({

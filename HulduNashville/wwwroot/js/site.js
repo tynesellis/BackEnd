@@ -59,13 +59,10 @@ const setCenterMarker = function () {
     //make the call to google maps api to get geocoding of the address
     geocoder.geocode({ 'address': address }, function (results, status) {
         const bounds = new google.maps.LatLngBounds();
-        if (status == 'OK') {
+        if (status === 'OK') {
 
             if (results[0].address_components[4].long_name !== "Davidson County") {
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 10,
-                    center: { lat: 36.1089409, lng: -86.8468632 }
-                });
+                map.setCenter();
                 alert("Please Enter An Address in Nashville, Davidson County");
             } else {
                 //if the address comes back successfully, set the center of the map to the address passed in
@@ -140,5 +137,5 @@ $("#address").on("keyup", function (e) {
     if (e.keyCode === 13) {
         //if the user presses enter, call setCenterMarker()
         setCenterMarker();
-    };
+    }
 });

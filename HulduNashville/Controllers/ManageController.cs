@@ -13,6 +13,10 @@ using Microsoft.Extensions.Options;
 using HulduNashville.Models;
 using HulduNashville.Models.ManageViewModels;
 using HulduNashville.Services;
+using HulduNashville.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HulduNashville.Controllers
 {
@@ -25,17 +29,20 @@ namespace HulduNashville.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
+        private readonly ApplicationDbContext _context;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
 
         public ManageController(
+          ApplicationDbContext context,
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
           UrlEncoder urlEncoder)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -62,6 +69,25 @@ namespace HulduNashville.Controllers
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AssignRole()
+        {
+            var userstore = new UserStore<ApplicationUser>(_context);
+            var rolestore = new RoleStore<IdentityRole>(_context);
+
+            IEnumerable<ApplicationUser> users = await userstore.Users.ToListAsync();
+            IEnumerable<IdentityRole> roles = await rolestore.Roles.ToListAsync();
+
+            var model = new AssignRoleViewModel
+            {
+                Users = new SelectList(users, "Id", "UserName"),
+                Roles = roles
             };
 
             return View(model);

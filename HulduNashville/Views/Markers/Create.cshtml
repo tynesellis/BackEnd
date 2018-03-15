@@ -78,6 +78,8 @@
         </form>
     </div>
 </div>
+@if (User.IsInRole("Administrator"))
+{
 <div class="row">
     <div class="col-md-4">
         <form asp-action="HiddenCreate" asp-controller="Images">
@@ -98,7 +100,7 @@
         </form>
     </div>
 </div>
-
+}
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

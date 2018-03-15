@@ -7,28 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HulduNashville.Data;
 using HulduNashville.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using HulduNashville.Models.ManageViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HulduNashville.Controllers
 {
     [Authorize(Roles = "Administrator")]
 
-    public class ImagesController : Controller
+    public class UserRolesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ImagesController(ApplicationDbContext context)
+        public UserRolesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Images
+        // GET: UserRoles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Image.ToListAsync());
+            return View(await _context.UserRole.ToListAsync());
         }
 
-        // GET: Images/Details/5
+        // GET: UserRoles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,52 +39,68 @@ namespace HulduNashville.Controllers
                 return NotFound();
             }
 
-            var image = await _context.Image
+            var userRole = await _context.UserRole
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (image == null)
+            if (userRole == null)
             {
                 return NotFound();
             }
 
-            return View(image);
+            return View(userRole);
         }
 
-        // GET: Images/Create
+
+        //Post: 
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(AssignRoleViewModel userRole)
+        {
+            var userstore = new UserStore<ApplicationUser>(_context);
+            
+            ApplicationUser user = await userstore.Users.Where(u => u.Id == userRole.UserId).SingleOrDefaultAsync();
+            
+            await userstore.AddToRoleAsync(user, userRole.RoleId);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        //Post: 
+        [HttpPost]
+        public async Task<IActionResult> RemoveRole(AssignRoleViewModel userRole)
+        {
+            var userstore = new UserStore<ApplicationUser>(_context);
+
+            ApplicationUser user = await userstore.Users.Where(u => u.Id == userRole.UserId).SingleOrDefaultAsync();
+
+            await userstore.RemoveFromRoleAsync(user, userRole.RoleId);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        // GET: UserRoles/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Images/Create
+        // POST: UserRoles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ImageURL,ImageName")] Image image)
+        public async Task<IActionResult> Create([Bind("Id")] UserRole userRole)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(image);
+                _context.Add(userRole);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(image);
+            return View(userRole);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> HiddenCreate([Bind("Id,ImageURL,ImageName")] Image image)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(image);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Create", "Markers");
-            }
-            return View(image);
-        }
-
-        // GET: Images/Edit/5
+        // GET: UserRoles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,22 +108,22 @@ namespace HulduNashville.Controllers
                 return NotFound();
             }
 
-            var image = await _context.Image.SingleOrDefaultAsync(m => m.Id == id);
-            if (image == null)
+            var userRole = await _context.UserRole.SingleOrDefaultAsync(m => m.Id == id);
+            if (userRole == null)
             {
                 return NotFound();
             }
-            return View(image);
+            return View(userRole);
         }
 
-        // POST: Images/Edit/5
+        // POST: UserRoles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ImageURL,ImageName")] Image image)
+        public async Task<IActionResult> Edit(int id, [Bind("Id")] UserRole userRole)
         {
-            if (id != image.Id)
+            if (id != userRole.Id)
             {
                 return NotFound();
             }
@@ -113,12 +132,12 @@ namespace HulduNashville.Controllers
             {
                 try
                 {
-                    _context.Update(image);
+                    _context.Update(userRole);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ImageExists(image.Id))
+                    if (!UserRoleExists(userRole.Id))
                     {
                         return NotFound();
                     }
@@ -129,10 +148,10 @@ namespace HulduNashville.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(image);
+            return View(userRole);
         }
 
-        // GET: Images/Delete/5
+        // GET: UserRoles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,30 +159,30 @@ namespace HulduNashville.Controllers
                 return NotFound();
             }
 
-            var image = await _context.Image
+            var userRole = await _context.UserRole
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (image == null)
+            if (userRole == null)
             {
                 return NotFound();
             }
 
-            return View(image);
+            return View(userRole);
         }
 
-        // POST: Images/Delete/5
+        // POST: UserRoles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var image = await _context.Image.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Image.Remove(image);
+            var userRole = await _context.UserRole.SingleOrDefaultAsync(m => m.Id == id);
+            _context.UserRole.Remove(userRole);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ImageExists(int id)
+        private bool UserRoleExists(int id)
         {
-            return _context.Image.Any(e => e.Id == id);
+            return _context.UserRole.Any(e => e.Id == id);
         }
     }
 }

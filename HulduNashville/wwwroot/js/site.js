@@ -26,7 +26,7 @@ const makeMarker = function (LatLong, map, m) {
                     </div>
                     <p>${m.description}</p>
                     <p>Source: ${m.citation.source}</p>
-                    <button class="addFav" id="${m.id}">Add To My Favorites</button>
+                    <button class="addFav" id="${m.id}">Add Comment</button>
                     </div>
                     `;
     //create info window
@@ -39,9 +39,18 @@ const makeMarker = function (LatLong, map, m) {
     NewMarker.setMap(map);
     //add listener for click on marker to display info window
     NewMarker.addListener('click', function () {
+        $("#map").css("height", "100vh");
         infowindow.open(map, NewMarker);
+        //add listener for click outside of marker to close window and recenter map
         google.maps.event.addListener(map, "click", function (event) {
             infowindow.close();
+            $("#map").css("height", "30em");
+            map.setCenter(LatLong);
+        });
+        //add listener for click on close infowindow button to reset map
+        google.maps.event.addListener(infowindow, 'closeclick', function () {
+            $("#map").css("height", "30em");
+            map.setCenter(LatLong);
         });
     });
 };
@@ -69,7 +78,15 @@ const setCenterMarker = function () {
         if (status === 'OK') {
 
             if (results[0].address_components[4].long_name !== "Davidson County") {
-                map.setCenter();
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 12,
+                    center: results[0].geometry.location
+                });
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    label: "*"
+                });
                 alert("Please Enter An Address in Nashville, Davidson County");
             } else {
                 //if the address comes back successfully, set the center of the map to the address passed in
@@ -77,6 +94,7 @@ const setCenterMarker = function () {
                     zoom: 12,
                     center: results[0].geometry.location
                 });
+
                 //lat and long coordinates of the map center
                 let clat = parseFloat(map.center.lat());
                 let clng = parseFloat(map.center.lng());

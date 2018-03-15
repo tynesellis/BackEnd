@@ -10,9 +10,12 @@ using HulduNashville.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using HulduNashville.Models.ManageViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HulduNashville.Controllers
 {
+    [Authorize(Roles = "Administrator")]
+
     public class UserRolesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -54,8 +57,22 @@ namespace HulduNashville.Controllers
             var userstore = new UserStore<ApplicationUser>(_context);
             
             ApplicationUser user = await userstore.Users.Where(u => u.Id == userRole.UserId).SingleOrDefaultAsync();
-
+            
             await userstore.AddToRoleAsync(user, userRole.RoleId);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        //Post: 
+        [HttpPost]
+        public async Task<IActionResult> RemoveRole(AssignRoleViewModel userRole)
+        {
+            var userstore = new UserStore<ApplicationUser>(_context);
+
+            ApplicationUser user = await userstore.Users.Where(u => u.Id == userRole.UserId).SingleOrDefaultAsync();
+
+            await userstore.RemoveFromRoleAsync(user, userRole.RoleId);
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Home");

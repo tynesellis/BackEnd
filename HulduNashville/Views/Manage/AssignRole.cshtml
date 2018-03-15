@@ -4,6 +4,7 @@
     ViewData["Title"] = "Title";
 }
 <div class="row">
+    <h2>Assign A Role</h2>
     <form asp-controller="UserRoles" asp-action="AssignRole">
         <div class="form-group">
             <select asp-for="UserId" asp-items="@Model.Users"></select>
@@ -14,6 +15,19 @@
         <div class="form-group">
             <input type="submit" value="Add Role" class="btn btn-default" />
         </div>
-
+    </form>
+</div>
+<div class="row">
+    <h2>Delete A Role</h2>
+    <form asp-controller="UserRoles" asp-action="RemoveRole">
+        <div class="form-group">
+            <select asp-for="UserId" asp-items="@Model.Users"></select>
+        </div>
+        <div class="form-group">
+            <select asp-for="RoleId" asp-items="@new SelectList(Model.Roles)"></select>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Remove Role" class="btn btn-default" />
+        </div>
     </form>
 </div>

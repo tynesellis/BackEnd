@@ -75,6 +75,7 @@ namespace HulduNashville.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> AssignRole()
         {
             var userstore = new UserStore<ApplicationUser>(_context);

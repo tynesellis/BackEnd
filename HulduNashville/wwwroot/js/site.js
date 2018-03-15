@@ -18,24 +18,31 @@ const makeMarker = function (LatLong, map, m) {
     });
     //build an html  content string for infowindow that users see when clicking on marker
     let contentString = `
+                    <div class="infoWindowContainer">
                     <h5>${m.title}</h5>
                     <h5>${m.address}</h5>
-                    <div>
+                    <div class="infoWindowPicDiv">
                     <img src="${m.image.imageURL}" alt="${m.image.imageName} height="25" width="auto">
                     </div>
                     <p>${m.description}</p>
                     <p>Source: ${m.citation.source}</p>
                     <button class="addFav" id="${m.id}">Add To My Favorites</button>
+                    </div>
                     `;
     //create info window
     var infowindow = new google.maps.InfoWindow({
-        content: contentString
+        content: contentString,
+        maxWidth: 300,
+        maxHeight: 200
     });
     //set marker to map
     NewMarker.setMap(map);
     //add listener for click on marker to display info window
     NewMarker.addListener('click', function () {
         infowindow.open(map, NewMarker);
+        google.maps.event.addListener(map, "click", function (event) {
+            infowindow.close();
+        });
     });
 };
 
@@ -111,9 +118,9 @@ const setCenterMarker = function () {
                 by distance and return the closest one*/
                 if (MarkersWithDistance.length === MarkerData.length) {
                     MarkersWithDistance.sort((a, b) => a.distance - b.distance);
-                    makeMarker(MarkersWithDistance[-1].newLatLong, map, MarkersWithDistance[-1]);
+                    makeMarker(MarkersWithDistance[MarkersWithDistance.length - 1].newLatLong, map, MarkersWithDistance[MarkersWithDistance.length-1]);
                     //extend the bounds of the map view to include the marker
-                    bounds.extend(MarkersWithDistance[-1].newLatLong);
+                    bounds.extend(MarkersWithDistance[MarkersWithDistance.length-1].newLatLong);
                 }
                 //center the map to the geometric center of all markers
                 map.setCenter(bounds.getCenter());

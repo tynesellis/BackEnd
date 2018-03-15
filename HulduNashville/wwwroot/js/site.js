@@ -1,4 +1,45 @@
-﻿//function to geocode the address entered by the user and set it at the center of the map
+﻿//Array to hold marker data returned from call to the database
+let MarkerData = [];
+//ajax call to get markers from the database
+const GetMarkerData = $.ajax({
+    Method: "Get",
+    url: "http://localhost:51208/Markers/GetMarkers"
+}).then(function (r) {
+    //on success, store array in MarkerData
+    MarkerData = r;
+    });
+//function to make new markers. Accepts latlong object, map instacne, and marker object
+const makeMarker = function (LatLong, map, m) {
+    //Create a new marker with google maps method
+    const NewMarker = new google.maps.Marker({
+        map: map,
+        position: LatLong,
+        label: m.title
+    });
+    //build an html  content string for infowindow that users see when clicking on marker
+    let contentString = `
+                    <h5>${m.title}</h5>
+                    <h5>${m.address}</h5>
+                    <div>
+                    <img src="${m.image.imageURL}" alt="${m.image.imageName} height="25" width="auto">
+                    </div>
+                    <p>${m.description}</p>
+                    <p>Source: ${m.citation.source}</p>
+                    <button class="addFav" id="${m.id}">Add To My Favorites</button>
+                    `;
+    //create info window
+    var infowindow = new google.maps.InfoWindow({
+        content: contentString
+    });
+    //set marker to map
+    NewMarker.setMap(map);
+    //add listener for click on marker to display info window
+    NewMarker.addListener('click', function () {
+        infowindow.open(map, NewMarker);
+    });
+};
+
+//function to geocode the address entered by the user and set it at the center of the map
 const setCenterMarker = function () {
 
     //set the options of the map
@@ -17,7 +58,7 @@ const setCenterMarker = function () {
     
     //make the call to google maps api to get geocoding of the address
     geocoder.geocode({ 'address': address }, function (results, status) {
-        
+        const bounds = new google.maps.LatLngBounds();
         if (status == 'OK') {
 
             if (results[0].address_components[4].long_name !== "Davidson County") {
@@ -32,6 +73,11 @@ const setCenterMarker = function () {
                     zoom: 12,
                     center: results[0].geometry.location
                 });
+                //lat and long coordinates of the map center
+                let clat = parseFloat(map.center.lat());
+                let clng = parseFloat(map.center.lng());
+                //extend the bounds of the map view to include the center
+                bounds.extend({ "lat": clat, "lng": clng });
 
                 //make a new marker with posistion of the coordinates returned
                 var marker = new google.maps.Marker({
@@ -39,10 +85,44 @@ const setCenterMarker = function () {
                     position: results[0].geometry.location,
                     label: "*"
                 });
-                $.ajax({
-                    Method: "Get",
-                    url: "/Markers"
-                }).then();
+                //Array to hold Markers with distance from center
+                const MarkersWithDistance = [];
+                //For each marker returned from the database...
+                MarkerData.forEach(m => {
+                    //create a lat/long object to pass to googlemaps api with marker coordinates
+                    const LatLong = { "lat": parseFloat(m.lat), "lng": parseFloat(m.lng) };
+                    //calculate the distance between the center of the map and the marker
+                    let distance = google.maps.geometry.spherical.computeDistanceBetween
+                        (new google.maps.LatLng(clat, clng),
+                        new google.maps.LatLng(parseFloat(m.lat), parseFloat(m.lng)));
+                    //if the distance is less than 10 miles(16093.3 meters)...
+                    if (distance < 16093.4) {
+                        //call the makeMarker method. Pass coordinates, map, and marker info
+                        makeMarker(LatLong, map, m);
+                        //extend the bounds of the map view to include the marker
+                        bounds.extend(LatLong);
+                    } else {
+                        //if over 10 miles, add the distance and latlong object to the marker
+                        m.distance = distance;
+                        m.newLatLong = LatLong;
+                        //push the updated marker to array
+                        MarkersWithDistance.push(m);
+                    }
+                });
+                /*If the MarkerData array is the same length as the MarkersWithDistance array
+                then none of the markers were within 10 miles of the center, so sort MarkersWithDistance
+                by distance and return the closest one*/
+                if (MarkersWithDistance.length === MarkerData.length) {
+                    MarkersWithDistance.sort((a, b) => a.distance - b.distance);
+                    makeMarker(MarkersWithDistance[-1].newLatLong, map, MarkersWithDistance[-1]);
+                    //extend the bounds of the map view to include the marker
+                    bounds.extend(MarkersWithDistance[-1].newLatLong);
+                }
+                //center the map to the geometric center of all markers
+                map.setCenter(bounds.getCenter());
+                map.fitBounds(bounds);
+                //remove one zoom level to ensure no marker is on the edge.
+                map.setZoom(map.getZoom() - 1);
             }
         } else {
             //if the address was bad, let the user know why

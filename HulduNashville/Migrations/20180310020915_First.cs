@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HulduNashville.Migrations
 {
-    public partial class first : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -202,7 +202,8 @@ namespace HulduNashville.Migrations
                     CitationId = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: false),
                     ImageId = table.Column<int>(nullable: false),
-                    LatLong = table.Column<string>(nullable: false),
+                    Lat = table.Column<string>(nullable: false),
+                    Lng = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: false)
                 },
                 constraints: table =>

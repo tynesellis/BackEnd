@@ -7,12 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HulduNashville.Data;
 using HulduNashville.Models;
-using System.Net;
-using System.Xml.Linq;
-using System.IO;
-using Newtonsoft.Json;
-using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace HulduNashville.Controllers
 {
@@ -30,6 +26,14 @@ namespace HulduNashville.Controllers
         {
             var applicationDbContext = _context.Marker.Include(m => m.Category).Include(m => m.Citation).Include(m => m.Image);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        //GET: List of Markers
+        public async Task<JsonResult> GetMarkers()
+        {
+            var applicationDbContext = _context.Marker.Include(m => m.Category).Include(m => m.Citation).Include(m => m.Image);
+
+            return Json(await applicationDbContext.ToListAsync());
         }
 
         // GET: Markers/Details/5
@@ -58,7 +62,7 @@ namespace HulduNashville.Controllers
         {
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Title");
             ViewData["CitationId"] = new SelectList(_context.Citation, "Id", "Source");
-            ViewData["ImageId"] = new SelectList(_context.Image, "Id", "ImageURL");
+            ViewData["ImageId"] = new SelectList(_context.Image, "Id", "ImageName");
             return View();
         }
 
@@ -67,10 +71,10 @@ namespace HulduNashville.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,LatLong,CategoryId,CitationId,ImageId")] Marker marker)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Address,Lat,Lng,CategoryId,CitationId,ImageId")] Marker marker)
         {
             var client = new HttpClient();
-            string address = marker.LatLong;
+            string address = marker.Address;
             string requestUri = string.Format("http://maps.googleapis.com/maps/api/geocode/json?address={0}&sensor=false$key=AIzaSyCjC9iCmI7i2do5GFSUYDnmiyqAShhyj4Y", Uri.EscapeDataString(address));
 
 
@@ -78,20 +82,35 @@ namespace HulduNashville.Controllers
 
             string textResult = await response.Content.ReadAsStringAsync();
             client.Dispose();
-            var json = JObject.Parse(textResult);
-            string lat = (string)json["results"][0]["geometry"]["location"]["lat"];
-            string lng = (string)json["results"][0]["geometry"]["location"]["lng"];
-            marker.LatLong = $"{{ {lat}, {lng} }}";
 
 
-
-
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(marker);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.Remove("Lat");
+                ModelState.Remove("Lng");
+                ModelState.Remove("Address");
+                var json = JObject.Parse(textResult);
+                string lat = (string)json["results"][0]["geometry"]["location"]["lat"];
+                string lng = (string)json["results"][0]["geometry"]["location"]["lng"];
+                string newAddress = (string)json["results"][0]["formatted_address"];
+                marker.Lat = lat;
+                marker.Lng = lng;
+                marker.Address = newAddress;
+
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(marker);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            } catch
+            {
+                ModelState.Remove("Lat");
+                marker.Lat = "ADDRESS DID NOT VALIDATE. PLEASE TRY AGAIN";
+                return View(marker);
             }
+
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Title", marker.CategoryId);
             ViewData["CitationId"] = new SelectList(_context.Citation, "Id", "Source", marker.CitationId);
             ViewData["ImageId"] = new SelectList(_context.Image, "Id", "ImageURL", marker.ImageId);
@@ -122,7 +141,7 @@ namespace HulduNashville.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,LatLong,CategoryId,CitationId,ImageId")] Marker marker)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Address,Description,Lat,Lng,CategoryId,CitationId,ImageId")] Marker marker)
         {
             if (id != marker.Id)
             {

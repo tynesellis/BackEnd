@@ -30,7 +30,7 @@ namespace HulduNashville.Controllers
             var applicationDbContext = _context.Marker.Include(m => m.Category).Include(m => m.Citation).Include(m => m.Image);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [AllowAnonymous]
         //GET: List of Markers
         public async Task<JsonResult> GetMarkers()
         {

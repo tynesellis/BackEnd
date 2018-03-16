@@ -22,6 +22,7 @@ namespace HulduNashville.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         public DbSet<HulduNashville.Models.Image> Image { get; set; }
 
@@ -30,5 +31,7 @@ namespace HulduNashville.Data
         public DbSet<HulduNashville.Models.Category> Category { get; set; }
 
         public DbSet<HulduNashville.Models.Marker> Marker { get; set; }
+
+        public DbSet<HulduNashville.Models.UserRole> UserRole { get; set; }
     }
 }

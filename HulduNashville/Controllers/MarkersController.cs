@@ -9,9 +9,12 @@ using HulduNashville.Data;
 using HulduNashville.Models;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HulduNashville.Controllers
 {
+    [Authorize(Roles = "Administrator, Contributor")]
+
     public class MarkersController : Controller
     {
         private readonly ApplicationDbContext _context;

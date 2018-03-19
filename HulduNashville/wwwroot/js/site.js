@@ -18,24 +18,40 @@ const makeMarker = function (LatLong, map, m) {
     });
     //build an html  content string for infowindow that users see when clicking on marker
     let contentString = `
+                    <div class="infoWindowContainer">
                     <h5>${m.title}</h5>
                     <h5>${m.address}</h5>
-                    <div>
+                    <div class="infoWindowPicDiv">
                     <img src="${m.image.imageURL}" alt="${m.image.imageName} height="25" width="auto">
                     </div>
                     <p>${m.description}</p>
                     <p>Source: ${m.citation.source}</p>
-                    <button class="addFav" id="${m.id}">Add To My Favorites</button>
+                    <button class="addFav" id="${m.id}">Add Comment</button>
+                    </div>
                     `;
     //create info window
     var infowindow = new google.maps.InfoWindow({
-        content: contentString
+        content: contentString,
+        maxWidth: 300,
+        maxHeight: 200
     });
     //set marker to map
     NewMarker.setMap(map);
     //add listener for click on marker to display info window
     NewMarker.addListener('click', function () {
+        $("#map").css("height", "100vh");
         infowindow.open(map, NewMarker);
+        //add listener for click outside of marker to close window and recenter map
+        google.maps.event.addListener(map, "click", function (event) {
+            infowindow.close();
+            $("#map").css("height", "30em");
+            map.setCenter(LatLong);
+        });
+        //add listener for click on close infowindow button to reset map
+        google.maps.event.addListener(infowindow, 'closeclick', function () {
+            $("#map").css("height", "30em");
+            map.setCenter(LatLong);
+        });
     });
 };
 
@@ -62,7 +78,15 @@ const setCenterMarker = function () {
         if (status === 'OK') {
 
             if (results[0].address_components[4].long_name !== "Davidson County") {
-                map.setCenter();
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 12,
+                    center: results[0].geometry.location
+                });
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    label: "*"
+                });
                 alert("Please Enter An Address in Nashville, Davidson County");
             } else {
                 //if the address comes back successfully, set the center of the map to the address passed in
@@ -70,6 +94,7 @@ const setCenterMarker = function () {
                     zoom: 12,
                     center: results[0].geometry.location
                 });
+
                 //lat and long coordinates of the map center
                 let clat = parseFloat(map.center.lat());
                 let clng = parseFloat(map.center.lng());
@@ -111,9 +136,9 @@ const setCenterMarker = function () {
                 by distance and return the closest one*/
                 if (MarkersWithDistance.length === MarkerData.length) {
                     MarkersWithDistance.sort((a, b) => a.distance - b.distance);
-                    makeMarker(MarkersWithDistance[-1].newLatLong, map, MarkersWithDistance[-1]);
+                    makeMarker(MarkersWithDistance[MarkersWithDistance.length - 1].newLatLong, map, MarkersWithDistance[MarkersWithDistance.length-1]);
                     //extend the bounds of the map view to include the marker
-                    bounds.extend(MarkersWithDistance[-1].newLatLong);
+                    bounds.extend(MarkersWithDistance[MarkersWithDistance.length-1].newLatLong);
                 }
                 //center the map to the geometric center of all markers
                 map.setCenter(bounds.getCenter());

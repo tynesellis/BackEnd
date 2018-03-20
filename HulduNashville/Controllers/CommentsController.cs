@@ -35,9 +35,21 @@ namespace HulduNashville.Controllers
         //GET: List of Markers
         public async Task<JsonResult> GetComments()
         {
-            var applicationDbContext = _context.Comment;
-
-            return Json(await applicationDbContext.ToListAsync());
+            List<UserCommentViewModel> UserComments = new List<UserCommentViewModel>();
+            var comments = await _context.Comment.ToListAsync();
+            var users = await _context.Users.ToListAsync();
+            comments.ForEach(c =>
+            {
+                var SpecificUser = users.Find(u => u.Id == c.User.Id);
+                UserCommentViewModel NewModel = new UserCommentViewModel()
+                {
+                    CommentString = c.CommentText,
+                    MarkerId = c.MarkerId,
+                    UserName = SpecificUser.UserName
+                };
+                UserComments.Add(NewModel);
+            });
+            return Json(UserComments);
         }
 
         // GET: Comments/Details/5

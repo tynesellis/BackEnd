@@ -27,6 +27,10 @@
     padding-right: 15px;
 }
 
+.commentsDiv {
+    margin-bottom: 2em;
+}
+
 /* Carousel */
 .carousel-caption p {
     font-size: 20px;
@@ -45,6 +49,7 @@
 
 .infoWindowContainer {
     height: auto;
+    padding-bottom: 3em;
 }
 
 .infoWindowPicDiv img {

@@ -11,7 +11,7 @@ using System;
 namespace HulduNashville.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180315004426_First")]
+    [Migration("20180315134007_First")]
     partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,6 +96,28 @@ namespace HulduNashville.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Citation");
+                });
+
+            modelBuilder.Entity("HulduNashville.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CommentText")
+                        .IsRequired();
+
+                    b.Property<int>("MarkerId");
+
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarkerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("HulduNashville.Models.Image", b =>
@@ -274,6 +296,19 @@ namespace HulduNashville.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("HulduNashville.Models.Comment", b =>
+                {
+                    b.HasOne("HulduNashville.Models.Marker", "Marker")
+                        .WithMany("Comments")
+                        .HasForeignKey("MarkerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HulduNashville.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("HulduNashville.Models.Marker", b =>

@@ -7,6 +7,10 @@
     background-repeat: no-repeat;
 }
 
+.container.body-content h2, h4, label {
+    color: white !important;
+}
+
 #map {
     width: 90%;
     height: 30em;
@@ -16,12 +20,15 @@
     overflow-y: scroll;
 }
 
-
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.commentsDiv {
+    margin-bottom: 2em;
 }
 
 /* Carousel */
@@ -42,6 +49,7 @@
 
 .infoWindowContainer {
     height: auto;
+    padding-bottom: 3em;
 }
 
 .infoWindowPicDiv img {

@@ -1,6 +1,7 @@
 ﻿//Array to hold marker data returned from call to the database
 let MarkerData = [];
 //ajax call to get markers from the database
+let Comments = [];
 const GetMarkerData = $.ajax({
     Method: "Get",
     url: "http://localhost:51208/Markers/GetMarkers"
@@ -8,6 +9,13 @@ const GetMarkerData = $.ajax({
     //on success, store array in MarkerData
     MarkerData = r;
     });
+const GetComments = $.ajax({
+    Method: "Get",
+    url: "http://localhost:51208/Comments/GetComments"
+}).then(function (r) {
+    //on success, store array in MarkerData
+    Comments = r;
+});
 //function to make new markers. Accepts latlong object, map instacne, and marker object
 const makeMarker = function (LatLong, map, m) {
     //Create a new marker with google maps method
@@ -16,6 +24,9 @@ const makeMarker = function (LatLong, map, m) {
         position: LatLong,
         label: m.title
     });
+    //filter out comments that match the marker
+    let MarkerComments = Comments.filter(c => c.markerId === m.id);
+
     //build an html  content string for infowindow that users see when clicking on marker
     let contentString = `
                     <div class="infoWindowContainer">
@@ -25,10 +36,30 @@ const makeMarker = function (LatLong, map, m) {
                     <img src="${m.image.imageURL}" alt="${m.image.imageName} height="25" width="auto">
                     </div>
                     <p>${m.description}</p>
-                    <p>Source: ${m.citation.source}</p>
-                    <button class="addFav" id="${m.id}">Add Comment</button>
-                    </div>
                     `;
+    if (m.citation.source.includes("http")) {
+        contentString += `
+                        <a href="${m.citation.source}">Source: ${m.citation.source}</a>
+                        `;
+    } else {
+        contentString += `<p>Source: ${m.citation.source}</p>
+    `};
+
+    contentString += `
+                       <div class="commentsDiv">
+                       <h5>Comments</h5>
+                       `;
+    MarkerComments.forEach(mc => {
+        contentString += `
+            <p class="commentsDiv_User">${mc.userName} says: </p>
+            <p id=${mc.markerId}>${mc.commentString}</p>
+        ` 
+    });
+    contentString += `
+                       </div>
+                       <button class="addComment" id="${m.id}">Add Comment</button>
+                       </div>
+                       `;
     //create info window
     var infowindow = new google.maps.InfoWindow({
         content: contentString,

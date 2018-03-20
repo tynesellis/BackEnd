@@ -43,5 +43,7 @@ namespace HulduNashville.Models
 
         public int ImageId { get; set; }
         public Image Image { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

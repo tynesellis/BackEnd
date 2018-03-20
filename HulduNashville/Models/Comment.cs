@@ -15,9 +15,11 @@ namespace HulduNashville.Models
         public string CommentText { get; set; }
 
         [Required]
-        public int UserMarkerId { get; set; }
-        public UserMarker UserMarker { get; set; }
+        public ApplicationUser User { get; set; }
 
-        public virtual ICollection<UserMarker> UserMarkers { get; set; }
+        [Required]
+        public int MarkerId { get; set; }
+        public Marker Marker { get; set; }
+
     }
 }

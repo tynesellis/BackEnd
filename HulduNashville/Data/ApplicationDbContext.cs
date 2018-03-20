@@ -33,5 +33,7 @@ namespace HulduNashville.Data
         public DbSet<HulduNashville.Models.Marker> Marker { get; set; }
 
         public DbSet<HulduNashville.Models.UserRole> UserRole { get; set; }
+
+        public DbSet<HulduNashville.Models.Comment> Comment { get; set; }
     }
 }

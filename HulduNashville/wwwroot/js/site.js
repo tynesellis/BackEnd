@@ -1,6 +1,7 @@
 ﻿//Array to hold marker data returned from call to the database
 let MarkerData = [];
 //ajax call to get markers from the database
+let Comments = [];
 const GetMarkerData = $.ajax({
     Method: "Get",
     url: "http://localhost:51208/Markers/GetMarkers"
@@ -8,6 +9,14 @@ const GetMarkerData = $.ajax({
     //on success, store array in MarkerData
     MarkerData = r;
     });
+const GetComments = $.ajax({
+    Method: "Get",
+    url: "http://localhost:51208/Comments/GetComments"
+}).then(function (r) {
+    //on success, store array in MarkerData
+    console.log(r);
+    Comments = r;
+});
 //function to make new markers. Accepts latlong object, map instacne, and marker object
 const makeMarker = function (LatLong, map, m) {
     //Create a new marker with google maps method
@@ -26,9 +35,9 @@ const makeMarker = function (LatLong, map, m) {
                     </div>
                     <p>${m.description}</p>
                     <p>Source: ${m.citation.source}</p>
-                    <button class="addFav" id="${m.id}">Add Comment</button>
+                    <button class="addComment" id="${m.id}">Add Comment</button>
                     </div>
-                    `;
+                    `; 
     //create info window
     var infowindow = new google.maps.InfoWindow({
         content: contentString,

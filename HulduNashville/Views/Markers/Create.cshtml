@@ -8,6 +8,7 @@
 
 <h4>Marker</h4>
 <hr />
+<div id="markersCreate">
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -47,61 +48,61 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="HiddenCreate" asp-controller="Categories">
+                @Html.Hidden("MarkerModel", Model);
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create Category" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <form asp-action="HiddenCreate" asp-controller="Citations">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Citation.Source" class="control-label"></label>
+                    <input asp-for="Citation.Source" class="form-control" />
+                    <span asp-validation-for="Citation.Source" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create Citation" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="HiddenCreate" asp-controller="Images">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Image.ImageName" class="control-label"></label>
+                        <input asp-for="Image.ImageName" class="form-control" />
+                        <span asp-validation-for="Image.ImageName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Image.ImageURL" class="control-label"></label>
+                        <input asp-for="Image.ImageURL" class="form-control" />
+                        <span asp-validation-for="Image.ImageURL" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Add a new image path" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="HiddenCreate" asp-controller="Categories">
-            @Html.Hidden("MarkerModel", Model);
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create Category" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
-    <div class="col-md-4">
-        <form asp-action="HiddenCreate" asp-controller="Citations">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Citation.Source" class="control-label"></label>
-                <input asp-for="Citation.Source" class="form-control" />
-                <span asp-validation-for="Citation.Source" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create Citation" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
+    }
 </div>
-@if (User.IsInRole("Administrator"))
-{
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="HiddenCreate" asp-controller="Images">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Image.ImageName" class="control-label"></label>
-                <input asp-for="Image.ImageName" class="form-control" />
-                <span asp-validation-for="Image.ImageName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image.ImageURL" class="control-label"></label>
-                <input asp-for="Image.ImageURL" class="form-control" />
-                <span asp-validation-for="Image.ImageURL" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Add a new image path" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
 </div>
-}
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

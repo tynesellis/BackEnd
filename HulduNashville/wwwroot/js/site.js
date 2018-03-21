@@ -4,14 +4,14 @@ let MarkerData = [];
 let Comments = [];
 const GetMarkerData = $.ajax({
     Method: "Get",
-    url: "http://localhost:51208/Markers/GetMarkers"
+    url: "/Markers/GetMarkers"
 }).then(function (r) {
     //on success, store array in MarkerData
     MarkerData = r;
     });
 const GetComments = $.ajax({
     Method: "Get",
-    url: "http://localhost:51208/Comments/GetComments"
+    url: "Comments/GetComments"
 }).then(function (r) {
     //on success, store array in MarkerData
     Comments = r;

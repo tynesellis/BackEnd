@@ -43,6 +43,7 @@ namespace HulduNashville.Controllers
                 var SpecificUser = users.Find(u => u.Id == c.User.Id);
                 UserCommentViewModel NewModel = new UserCommentViewModel()
                 {
+                    CommentId = c.Id,
                     CommentString = c.CommentText,
                     MarkerId = c.MarkerId,
                     UserName = SpecificUser.UserName

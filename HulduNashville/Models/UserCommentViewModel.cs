@@ -7,6 +7,8 @@ namespace HulduNashville.Models
 {
     public class UserCommentViewModel
     {
+        public int CommentId { get; set; }
+
         public string CommentString { get; set; }
 
         public string UserName { get; set; }

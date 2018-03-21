@@ -25,21 +25,21 @@ const makeMarker = function (LatLong, map, m) {
         label: m.title
     });
     //filter out comments that match the marker
-    let MarkerComments = Comments.filter(c => c.markerId === m.id);
-
+    let MarkerComments = Comments.filter(c => c.markerId === m.id).sort((a, b) => b.commentId - a.commentId);
     //build an html  content string for infowindow that users see when clicking on marker
     let contentString = `
                     <div class="infoWindowContainer">
                     <h5>${m.title}</h5>
                     <h5>${m.address}</h5>
+                    <p class="disclaimer">***DO NOT VISIT ANY PROPERTY WITHOUT PERMSSION OF OWNER***</p>
                     <div class="infoWindowPicDiv">
-                    <img src="${m.image.imageURL}" alt="${m.image.imageName} height="25" width="auto">
+                    <img src="${m.image.imageURL}" alt="${m.image.imageName}">
                     </div>
                     <p>${m.description}</p>
                     `;
     if (m.citation.source.includes("http")) {
         contentString += `
-                        <a href="${m.citation.source}">Source: ${m.citation.source}</a>
+                        <a href="${m.citation.source}" target="_blank">Source: ${m.citation.source}</a>
                         `;
     } else {
         contentString += `<p>Source: ${m.citation.source}</p>
@@ -52,7 +52,7 @@ const makeMarker = function (LatLong, map, m) {
     MarkerComments.forEach(mc => {
         contentString += `
             <p class="commentsDiv_User">${mc.userName} says: </p>
-            <p id=${mc.markerId}>${mc.commentString}</p>
+            <p id=${mc.markerId} class="comment">${mc.commentString}</p>
         ` 
     });
     contentString += `
@@ -63,7 +63,7 @@ const makeMarker = function (LatLong, map, m) {
     //create info window
     var infowindow = new google.maps.InfoWindow({
         content: contentString,
-        maxWidth: 300,
+        maxWidth: 500,
         maxHeight: 200
     });
     //set marker to map

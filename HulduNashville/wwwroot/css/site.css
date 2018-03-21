@@ -7,13 +7,18 @@
     background-repeat: no-repeat;
 }
 
-.container.body-content h2, h4, label {
+.container.body-content h1, h2, h3, h4, h5, label {
     color: white !important;
 }
 
+#home_tag  {
+    text-align: center;
+    margin: .5em auto;
+    text-shadow: 5px 5px 2px black;
+}
+
 #map {
-    width: 90%;
-    height: 30em;
+    height: 55vh;
     margin: 2em auto;
     box-shadow: 0 0 1em 1em black;
     border-radius: 15px;
@@ -31,30 +36,67 @@
     margin-bottom: 2em;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+.commentsDiv p {
+    margin: 0 0;
 }
 
-/* Make .svg files in the carousel display properly in older browsers 
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}*/
 
 /* QR code generator */
 #qrCode {
     margin: 15px;
 }
 
+#input_div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#address {
+    width: 60%;
+    height: 2em;
+    font-size: 1.5em;
+    border-radius: 15px;
+    box-shadow: 0 0 1em 1em black;
+    outline: none;
+}
+
+#submit {
+    width: 20%;
+    height: 2em;
+    font-size: 1.5em;
+    border-radius: 15px;
+    box-shadow: 0 0 1em 1em black;
+    outline: none;
+    background-color: white;
+    color: black;
+}
+
 .infoWindowContainer {
-    height: auto;
-    padding-bottom: 3em;
+    padding-bottom: 2em;
+    color: black !important;
+    padding: 1em;
+    height: 80vh;
+    overflow-y: scroll;
+}
+
+.disclaimer {
+    margin-bottom: 0;
+}
+.infoWindowContainer h5, p {
+    color: black !important;
 }
 
 .infoWindowPicDiv img {
-    width: 100% !important;
+    width: 20em;
+    height: auto;
+    margin: 1em auto;
 }
+
+.comment {
+    background-color:aliceblue;
+}
+
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     .infoWindowContainer {

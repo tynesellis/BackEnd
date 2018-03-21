@@ -71,7 +71,7 @@ namespace HulduNashville.Controllers
         //Creates a new category without changing the view.  Used in Marker Creation 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> HiddenCreate([Bind("Id,Title")] Category category, Marker MarkerModel)
+        public async Task<IActionResult> HiddenCreate([Bind("Id,Title")] Category category)
         {
             if (ModelState.IsValid)
             {

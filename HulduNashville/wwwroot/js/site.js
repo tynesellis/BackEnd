@@ -164,12 +164,14 @@ const setCenterMarker = function () {
                 });
                 /*If the MarkerData array is the same length as the MarkersWithDistance array
                 then none of the markers were within 10 miles of the center, so sort MarkersWithDistance
-                by distance and return the closest one*/
+                by distance and return the closest two*/
                 if (MarkersWithDistance.length === MarkerData.length) {
-                    MarkersWithDistance.sort((a, b) => a.distance - b.distance);
-                    makeMarker(MarkersWithDistance[MarkersWithDistance.length - 1].newLatLong, map, MarkersWithDistance[MarkersWithDistance.length-1]);
-                    //extend the bounds of the map view to include the marker
-                    bounds.extend(MarkersWithDistance[MarkersWithDistance.length-1].newLatLong);
+                    const closestTwo = MarkersWithDistance.sort((a, b) => b.distance - a.distance).slice(0, 2);
+                    closestTwo.forEach(mk => {
+                        makeMarker(mk.newLatLong, map, mk);
+                        //extend the bounds of the map view to include the marker
+                        bounds.extend(mk.newLatLong);
+                    });
                 }
                 //center the map to the geometric center of all markers
                 map.setCenter(bounds.getCenter());

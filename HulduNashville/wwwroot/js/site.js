@@ -22,7 +22,9 @@ const makeMarker = function (LatLong, map, m) {
     const NewMarker = new google.maps.Marker({
         map: map,
         position: LatLong,
-        label: m.title
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+        animation: google.maps.Animation.DROP,
+
     });
     //filter out comments that match the marker
     let MarkerComments = Comments.filter(c => c.markerId === m.id).sort((a, b) => b.commentId - a.commentId);
@@ -39,7 +41,7 @@ const makeMarker = function (LatLong, map, m) {
                     `;
     if (m.citation.source.includes("http")) {
         contentString += `
-                        <a href="${m.citation.source}" target="_blank">Source: ${m.citation.source}</a>
+                        <a class="sourceLink" href="${m.citation.source}" target="_blank">Source: ${m.citation.source}</a>
                         `;
     } else {
         contentString += `<p>Source: ${m.citation.source}</p>

@@ -1,11 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<h2> Welcome to HulduNashville</h2>
-<h2>Type Your Address in Below and See How Paranormal Your Corner of Nashville Is</h2>
+<h3 id="home_tag">Enter A Nashville Address To Get Closest Paranormal Reports</h3>
+
 <div id="map"></div>
-<input id="address" placeholder="Enter Your Address" autofocus/>
-<button id="submit">Submit</button>
+<div class="row" id="input_div">
+    <input id="address" class="col-md-8" placeholder="Enter Your Address" autofocus />
+    <button id="submit" class="col-md-4">Submit</button>
+</div>
 <script>
     function initMap() {
         const Nashville = { lat: 36.1089409, lng: -86.8468632 };
@@ -17,5 +19,5 @@
     }
 </script>
 <script src="~/js/favorites.js" asp-append-version="true"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=geometry&callback=initMap">
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjC9iCmI7i2do5GFSUYDnmiyqAShhyj4Y&libraries=geometry&callback=initMap">
 </script>

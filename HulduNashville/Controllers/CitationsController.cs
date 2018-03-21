@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HulduNashville.Data;
 using HulduNashville.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HulduNashville.Controllers
 {
+    [Authorize(Roles = "Administrator, Contributor")]
+
     public class CitationsController : Controller
     {
         private readonly ApplicationDbContext _context;

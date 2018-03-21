@@ -4,14 +4,14 @@ let MarkerData = [];
 let Comments = [];
 const GetMarkerData = $.ajax({
     Method: "Get",
-    url: "http://localhost:51208/Markers/GetMarkers"
+    url: "/Markers/GetMarkers"
 }).then(function (r) {
     //on success, store array in MarkerData
     MarkerData = r;
     });
 const GetComments = $.ajax({
     Method: "Get",
-    url: "http://localhost:51208/Comments/GetComments"
+    url: "Comments/GetComments"
 }).then(function (r) {
     //on success, store array in MarkerData
     Comments = r;
@@ -22,24 +22,26 @@ const makeMarker = function (LatLong, map, m) {
     const NewMarker = new google.maps.Marker({
         map: map,
         position: LatLong,
-        label: m.title
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+        animation: google.maps.Animation.DROP,
+
     });
     //filter out comments that match the marker
-    let MarkerComments = Comments.filter(c => c.markerId === m.id);
-
+    let MarkerComments = Comments.filter(c => c.markerId === m.id).sort((a, b) => b.commentId - a.commentId);
     //build an html  content string for infowindow that users see when clicking on marker
     let contentString = `
                     <div class="infoWindowContainer">
                     <h5>${m.title}</h5>
                     <h5>${m.address}</h5>
+                    <p class="disclaimer">***DO NOT VISIT ANY PROPERTY WITHOUT PERMSSION OF OWNER***</p>
                     <div class="infoWindowPicDiv">
-                    <img src="${m.image.imageURL}" alt="${m.image.imageName} height="25" width="auto">
+                    <img src="${m.image.imageURL}" alt="${m.image.imageName}">
                     </div>
                     <p>${m.description}</p>
                     `;
     if (m.citation.source.includes("http")) {
         contentString += `
-                        <a href="${m.citation.source}">Source: ${m.citation.source}</a>
+                        <a class="sourceLink" href="${m.citation.source}" target="_blank">Source: ${m.citation.source}</a>
                         `;
     } else {
         contentString += `<p>Source: ${m.citation.source}</p>
@@ -52,7 +54,7 @@ const makeMarker = function (LatLong, map, m) {
     MarkerComments.forEach(mc => {
         contentString += `
             <p class="commentsDiv_User">${mc.userName} says: </p>
-            <p id=${mc.markerId}>${mc.commentString}</p>
+            <p id=${mc.markerId} class="comment">${mc.commentString}</p>
         ` 
     });
     contentString += `
@@ -63,7 +65,7 @@ const makeMarker = function (LatLong, map, m) {
     //create info window
     var infowindow = new google.maps.InfoWindow({
         content: contentString,
-        maxWidth: 300,
+        maxWidth: 500,
         maxHeight: 200
     });
     //set marker to map
@@ -164,12 +166,14 @@ const setCenterMarker = function () {
                 });
                 /*If the MarkerData array is the same length as the MarkersWithDistance array
                 then none of the markers were within 10 miles of the center, so sort MarkersWithDistance
-                by distance and return the closest one*/
+                by distance and return the closest two*/
                 if (MarkersWithDistance.length === MarkerData.length) {
-                    MarkersWithDistance.sort((a, b) => a.distance - b.distance);
-                    makeMarker(MarkersWithDistance[MarkersWithDistance.length - 1].newLatLong, map, MarkersWithDistance[MarkersWithDistance.length-1]);
-                    //extend the bounds of the map view to include the marker
-                    bounds.extend(MarkersWithDistance[MarkersWithDistance.length-1].newLatLong);
+                    const closestTwo = MarkersWithDistance.sort((a, b) => b.distance - a.distance).slice(0, 2);
+                    closestTwo.forEach(mk => {
+                        makeMarker(mk.newLatLong, map, mk);
+                        //extend the bounds of the map view to include the marker
+                        bounds.extend(mk.newLatLong);
+                    });
                 }
                 //center the map to the geometric center of all markers
                 map.setCenter(bounds.getCenter());

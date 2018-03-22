@@ -147,9 +147,15 @@ const setCenterMarker = function () {
                     //create a lat/long object to pass to googlemaps api with marker coordinates
                     const LatLong = { "lat": parseFloat(m.lat), "lng": parseFloat(m.lng) };
                     //calculate the distance between the center of the map and the marker
+			console.log(clat)
+			console.log(clong)
+			console.log(m.lat)
+			console.log(m.lng)
+			console.log("test")
                     let distance = google.maps.geometry.spherical.computeDistanceBetween
                         (new google.maps.LatLng(clat, clng),
                         new google.maps.LatLng(parseFloat(m.lat), parseFloat(m.lng)));
+		    console.log(distance)
                     //if the distance is less than 10 miles(16093.3 meters)...
                     if (distance < 16093.4) {
                         //call the makeMarker method. Pass coordinates, map, and marker info

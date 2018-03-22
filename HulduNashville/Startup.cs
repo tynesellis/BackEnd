@@ -13,6 +13,7 @@ using HulduNashville.Models;
 using HulduNashville.Services;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace HulduNashville
 {
@@ -57,9 +58,13 @@ namespace HulduNashville
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+       
             app.UseStaticFiles();
-
+            
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
             app.UseAuthentication();
 
             app.UseMvc(routes =>

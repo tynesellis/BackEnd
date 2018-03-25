@@ -1,0 +1,5 @@
+● kestrel-hellomvc.service - HulduNashville .NET Web API App running on Ubuntu
+   Loaded: loaded (/etc/systemd/system/kestrel-hellomvc.service; enabled; vendor preset: enabled)
+   Active: activating (auto-restart) (Result: exit-code) since Thu 2018-03-22 16:43:59 UTC; 11ms ago
+  Process: 29544 ExecStart=/usr/bin/dotnet /bin/Debug/netcoreapp2.0/publish/HulduNashville.dll [0;1;31m(code=exited, status=200/CHDIR)[0m
+ Main PID: 29544 (code=exited, status=200/CHDIR)

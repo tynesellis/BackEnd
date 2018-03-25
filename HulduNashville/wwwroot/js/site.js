@@ -110,7 +110,10 @@ const setCenterMarker = function () {
         const bounds = new google.maps.LatLngBounds();
         if (status === 'OK') {
 
-            if (results[0].address_components[4].long_name !== "Davidson County") {
+            let Davidson = false;
+            //If the address is not in Davidson County, notify the user
+            results[0].address_components.forEach(ac => {if(ac.long_name === "Davidson County"){Davidson = true}});
+            if (Davidson === false) {
                 var map = new google.maps.Map(document.getElementById('map'), {
                     zoom: 12,
                     center: results[0].geometry.location
@@ -130,9 +133,9 @@ const setCenterMarker = function () {
 
                 //lat and long coordinates of the map center
                 let clat = parseFloat(map.center.lat());
-                let clng = parseFloat(map.center.lng());
+                let cclng = parseFloat(map.center.lng());
                 //extend the bounds of the map view to include the center
-                bounds.extend({ "lat": clat, "lng": clng });
+                bounds.extend({ "lat": clat, "lng": cclng });
 
                 //make a new marker with posistion of the coordinates returned
                 var marker = new google.maps.Marker({
@@ -147,9 +150,10 @@ const setCenterMarker = function () {
                     //create a lat/long object to pass to googlemaps api with marker coordinates
                     const LatLong = { "lat": parseFloat(m.lat), "lng": parseFloat(m.lng) };
                     //calculate the distance between the center of the map and the marker
-                    let distance = google.maps.geometry.spherical.computeDistanceBetween
-                        (new google.maps.LatLng(clat, clng),
+                        let distance = google.maps.geometry.spherical.computeDistanceBetween
+                        (new google.maps.LatLng(clat, cclng),
                         new google.maps.LatLng(parseFloat(m.lat), parseFloat(m.lng)));
+                        console.log(distance);
                     //if the distance is less than 10 miles(16093.3 meters)...
                     if (distance < 16093.4) {
                         //call the makeMarker method. Pass coordinates, map, and marker info

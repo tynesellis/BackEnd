@@ -105,6 +105,8 @@
 
     </div>
 </div>
+@Html.Raw(TempData["msg"])
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

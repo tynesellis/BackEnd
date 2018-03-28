@@ -109,9 +109,8 @@ namespace HulduNashville.Controllers
                 }
             } catch
             {
-                ModelState.Remove("Lat");
-                marker.Lat = "ADDRESS DID NOT VALIDATE. PLEASE TRY AGAIN";
-                return View(marker);
+               TempData["msg"] = "<script>alert('Address Did Not Validate.  Please Try Again');</script>";
+
             }
 
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Title", marker.CategoryId);

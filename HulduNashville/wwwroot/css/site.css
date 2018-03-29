@@ -17,6 +17,14 @@
     text-shadow: 5px 5px 2px black;
 }
 
+#standby {
+    position: relative;
+    display: none;
+    color: white;
+    text-align: center;
+    z-index: 1;
+}
+
 #map {
     height: 55vh;
     margin: 2em auto;

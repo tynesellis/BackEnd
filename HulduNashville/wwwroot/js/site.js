@@ -8,6 +8,8 @@ const GetMarkerData = $.ajax({
 }).then(function (r) {
     //on success, store array in MarkerData
     MarkerData = r;
+    $("#address").attr("placeholder", "Enter Your Address").prop("disabled", false);
+    $("#submit").prop("disabled", false);
     });
 const GetComments = $.ajax({
     Method: "Get",

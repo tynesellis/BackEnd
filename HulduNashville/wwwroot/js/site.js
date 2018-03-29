@@ -2,15 +2,18 @@
 let MarkerData = [];
 //ajax call to get markers from the database
 let Comments = [];
-const GetMarkerData = $.ajax({
+const GetMarkerData = function() {
+    $("#standby").show();
+    $.ajax({
     Method: "Get",
     url: "/Markers/GetMarkers"
 }).then(function (r) {
     //on success, store array in MarkerData
     MarkerData = r;
-    $("#address").attr("placeholder", "Enter Your Address").prop("disabled", false);
-    $("#submit").prop("disabled", false);
+    $("#standby").hide();
+    setCenterMarker();
     });
+};
 const GetComments = $.ajax({
     Method: "Get",
     url: "Comments/GetComments"
@@ -197,11 +200,11 @@ const setCenterMarker = function () {
 };
 
 //listen for click on the submit button.  On click, call setCenterMarker function
-$("#submit").on("click", setCenterMarker);
+$("#submit").on("click", GetMarkerData);
 //listen for press of enter key in input field
 $("#address").on("keyup", function (e) {
     if (e.keyCode === 13) {
         //if the user presses enter, call setCenterMarker()
-        setCenterMarker();
+        GetMarkerData();
     }
 });
